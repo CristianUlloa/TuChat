@@ -1,4 +1,4 @@
-package com.tuchat.judc.server.api.dto.request;
+package com.tuchat.judc.server.api.dto.request.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CrearCuentaDTO {
-	
-	private ActualizarPerfilDTO perfil;
-	
-	private String correo;
-
+public class ArchivoDataDTO {
+	private String extension;
+	private String dataBase64;
 }

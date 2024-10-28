@@ -1,4 +1,6 @@
-package com.tuchat.judc.server.api.dto.request;
+package com.tuchat.judc.server.api.dto.response;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CrearCuentaDTO {
-	
-	private ActualizarPerfilDTO perfil;
-	
-	private String correo;
+public class ObtenerContactos {
 
+	private List<String> correos;
 }

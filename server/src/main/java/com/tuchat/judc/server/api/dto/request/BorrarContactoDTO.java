@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnviarArchivoDTO {
-	private String extension;
-	private String dataBase64;
+public class BorrarContactoDTO {
+
+	private String correo;
+
 }

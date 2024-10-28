@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActualizarPerfil {
+public class BorrarGrupoDTO {
 	
-	private EnviarArchivoDTO icon;
+	private int id;
 
-	private EnviarUsuarioDataDTO data;
 }

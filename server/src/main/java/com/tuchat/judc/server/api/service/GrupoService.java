@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tuchat.judc.server.api.dto.request.CrearGrupoDTO;
-import com.tuchat.judc.server.api.dto.request.EnviarMensajeDTO;
+import com.tuchat.judc.server.api.dto.request.data.MensajeDataDTO;
 import com.tuchat.judc.server.api.dto.response.GrupoDTO;
 import com.tuchat.judc.server.mapper.GrupoMapper;
 import com.tuchat.judc.server.model.EstadoMensaje;
@@ -202,7 +202,7 @@ public class GrupoService {
 		registroGrupoEventoService.registrarEvento(grupo, null, null, TipoEvento.ELIMINAR_GRUPO);
 	}
 
-	public void enviarMensajeGrupo(EnviarMensajeDTO enviarMensajeDTO, int grupoId, String userCorreo) {
+	public void enviarMensajeGrupo(MensajeDataDTO mensajeDataDTO, int grupoId, String userCorreo) {
 	    // Validar que el grupo exista
 	    Grupo grupo = grupoRepository.findById(grupoId)
 	            .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
@@ -222,17 +222,17 @@ public class GrupoService {
 	    // Crear y guardar el mensaje
 	    Mensaje mensaje = Mensaje.builder()
 	            .userEmisor(usuario)
-	            .text(enviarMensajeDTO.getText())
-	            .tipo(enviarMensajeDTO.isEsArchivo() ? TipoMensaje.ARCHIVO : TipoMensaje.TEXTO)
+	            .text(mensajeDataDTO.getText())
+	            .tipo(mensajeDataDTO.isEsArchivo() ? TipoMensaje.ARCHIVO : TipoMensaje.TEXTO)
 	            .fechaEnvio(Timestamp.valueOf(LocalDateTime.now()))
 	            .build();
 
 	    // Si es un archivo, crear y guardar la referencia al archivo
-	    if (enviarMensajeDTO.isEsArchivo()) {
+	    if (mensajeDataDTO.isEsArchivo()) {
 	        MensajeArchivo ma = MensajeArchivo.builder()
 	                .mensaje(mensaje)
-	                .extensionArchivo(enviarMensajeDTO.getExtension())
-	                .archivoPath(guardarArchivo(enviarMensajeDTO.getArchivoBase64(), enviarMensajeDTO.getExtension()))
+	                .extensionArchivo(mensajeDataDTO.getExtension())
+	                .archivoPath(guardarArchivo(mensajeDataDTO.getArchivoBase64(), mensajeDataDTO.getExtension()))
 	                .build();
 	        mensajeArchivoRepository.save(ma);
 	    }

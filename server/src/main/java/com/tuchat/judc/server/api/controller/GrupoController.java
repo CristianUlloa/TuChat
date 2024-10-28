@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tuchat.judc.server.api.dto.request.CrearGrupoDTO;
-import com.tuchat.judc.server.api.dto.request.EnviarMensajeDTO;
 import com.tuchat.judc.server.api.dto.request.EnviarMensajeGrupoDTO;
+import com.tuchat.judc.server.api.dto.request.data.MensajeDataDTO;
 import com.tuchat.judc.server.api.dto.response.GrupoDTO;
 import com.tuchat.judc.server.api.service.GrupoService;
 
@@ -104,10 +104,10 @@ public class GrupoController {
 		String userCorreo = validarLogiado(session);
 
 		// Extraer el EnviarMensajeDTO y el grupoId
-		EnviarMensajeDTO enviarMensajeDTO = enviarMensajeGrupoDTO.getEnviarMensajeDTO();
+		MensajeDataDTO mensajeDataDTO = enviarMensajeGrupoDTO.getEnviarMensajeDTO();
 		int grupoId = enviarMensajeGrupoDTO.getGrupoId();
 
-		grupoService.enviarMensajeGrupo(enviarMensajeDTO, grupoId, userCorreo);
+		grupoService.enviarMensajeGrupo(mensajeDataDTO, grupoId, userCorreo);
 		return ResponseEntity.ok("Mensaje enviado exitosamente.");
 	}
 

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tuchat.judc.server.api.dto.request.EnviarMensajeDTO;
+import com.tuchat.judc.server.api.dto.request.data.MensajeDataDTO;
 import com.tuchat.judc.server.api.dto.response.MensajeDTO;
 import com.tuchat.judc.server.model.EstadoMensaje;
 import com.tuchat.judc.server.model.Mensaje;
@@ -36,28 +36,28 @@ public class MensajePrivadoService {
 	@Autowired
 	private MensajeArchivoRepository mensajeArchivoRepository;
 
-	public void enviarMensaje(EnviarMensajeDTO enviarMensajeDTO) {
+	public void enviarMensaje(MensajeDataDTO mensajeDataDTO) {
 		// Validar que el emisor exista
-		Usuario emisor = usuarioRepository.findByCorreo(enviarMensajeDTO.getCorreoEmisor());
+		Usuario emisor = usuarioRepository.findByCorreo(mensajeDataDTO.getCorreoEmisor());
 		if (emisor == null) {
 			throw new RuntimeException("Usuario emisor no encontrado.");
 		}
 
 		// Validar que el receptor exista
-		Usuario receptor = usuarioRepository.findByCorreo(enviarMensajeDTO.getCorreoReceptor());
+		Usuario receptor = usuarioRepository.findByCorreo(mensajeDataDTO.getCorreoReceptor());
 		if (receptor == null) {
 			throw new RuntimeException("Usuario receptor no encontrado.");
 		}
 
 		// Crear y guardar el mensaje
-		Mensaje mensaje = Mensaje.builder().userEmisor(emisor).text(enviarMensajeDTO.getText())
-				.tipo(enviarMensajeDTO.isEsArchivo() ? TipoMensaje.ARCHIVO : TipoMensaje.TEXTO)
+		Mensaje mensaje = Mensaje.builder().userEmisor(emisor).text(mensajeDataDTO.getText())
+				.tipo(mensajeDataDTO.isEsArchivo() ? TipoMensaje.ARCHIVO : TipoMensaje.TEXTO)
 				.fechaEnvio(Timestamp.valueOf(LocalDateTime.now())).build();
 
-		if (enviarMensajeDTO.isEsArchivo()) {
+		if (mensajeDataDTO.isEsArchivo()) {
 			MensajeArchivo ma = MensajeArchivo.builder().mensaje(mensaje)
-					.extensionArchivo(enviarMensajeDTO.getExtension())
-					.archivoPath(guardarArchivo(enviarMensajeDTO.getArchivoBase64(), enviarMensajeDTO.getExtension()))
+					.extensionArchivo(mensajeDataDTO.getExtension())
+					.archivoPath(guardarArchivo(mensajeDataDTO.getArchivoBase64(), mensajeDataDTO.getExtension()))
 					.build();
 
 			mensajeArchivoRepository.save(ma);

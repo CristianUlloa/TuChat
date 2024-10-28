@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tuchat.judc.server.api.dto.request.EnviarMensajeDTO;
+import com.tuchat.judc.server.api.dto.request.data.MensajeDataDTO;
 import com.tuchat.judc.server.api.dto.response.MensajeDTO;
 import com.tuchat.judc.server.api.service.MensajePrivadoService;
 
@@ -25,19 +25,19 @@ public class MensajePrivadoController {
 	private MensajePrivadoService mensajePrivadoService;
 
 	@PostMapping("/enviar")
-	public ResponseEntity<String> enviarMensaje(@RequestBody EnviarMensajeDTO enviarMensajeDTO, HttpSession session) {
+	public ResponseEntity<String> enviarMensaje(@RequestBody MensajeDataDTO mensajeDataDTO, HttpSession session) {
 
 		String userCorreo = (String) session.getAttribute(LoginController.USER_CORREO);
 
 		if (userCorreo != null) {
 			// Verificar si el emisor y el receptor son el mismo
-			if (userCorreo.equals(enviarMensajeDTO.getCorreoReceptor())) {
+			if (userCorreo.equals(mensajeDataDTO.getCorreoReceptor())) {
 				return ResponseEntity.status(400).body("No puedes enviarte mensajes a ti mismo.");
 			}
 
 			try {
-				enviarMensajeDTO.setCorreoEmisor(userCorreo);
-				mensajePrivadoService.enviarMensaje(enviarMensajeDTO);
+				mensajeDataDTO.setCorreoEmisor(userCorreo);
+				mensajePrivadoService.enviarMensaje(mensajeDataDTO);
 				return ResponseEntity.ok("Mensaje enviado exitosamente.");
 			} catch (Exception e) {
 				return ResponseEntity.status(400).body(e.getMessage());

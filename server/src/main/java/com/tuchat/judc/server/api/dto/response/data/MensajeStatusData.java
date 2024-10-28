@@ -1,6 +1,4 @@
-package com.tuchat.judc.server.api.dto.request;
-
-import com.tuchat.judc.server.api.dto.request.data.MensajeDataDTO;
+package com.tuchat.judc.server.api.dto.response.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnviarMensajePrivadoDTO {
+public class MensajeStatusData {
 	
-	private MensajeDataDTO mensajeData;
-
 	private String correo;
-
+	
+	private String status;
 
 }

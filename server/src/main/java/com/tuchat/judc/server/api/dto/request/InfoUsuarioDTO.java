@@ -9,16 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnviarUsuarioDataDTO {
+public class InfoUsuarioDTO {
 	
-	private String nombres;
-	
-	private String apellidos;
-	
-	private String nombreCompleto;
-	
-	private boolean usaNombreCompleto;
-
-	private String descripcion;
+	private String correo;
 
 }
