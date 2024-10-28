@@ -1,4 +1,6 @@
-package tuchat.server.api.dto.request;
+package tuchat.server.api.dto.response;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InfoArchivoDTO {
+public class ObtenerGruposDTO {
 	
-	private String path;
+	private List<ObtenerGrupoDTO> gruposData;
 
 }

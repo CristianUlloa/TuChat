@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InfoMensajePrivadoDTO {
-	
-	private String correo;
+public class InfoVistoGrupoDTO {
+	private Integer grupo_id;
 
 }

@@ -13,7 +13,7 @@ import tuchat.server.api.dto.response.data.ObtenerArchivoDataDTO;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ObtenerInfoGrupoDTO {
+public class ObtenerGrupoDTO {
 
 	private int id;
 
