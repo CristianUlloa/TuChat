@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EnviarMensajeGrupoDTO {
-	private EnviarMensajeDTO enviarMensajeDTO;
-	private int grupoId;
+
+	private EnviarMensajeDTO mensaje;
+
+	private int grupo;
+
 }

@@ -82,7 +82,7 @@ public class Usuario implements Serializable {
     // Relación uno a uno con UsuarioNombreData
     @OneToOne(mappedBy = "usuario")
     @JoinColumn(name = "id", referencedColumnName = "id")
-    private UsuarioNombreData nombreData;
+    private UsuarioData nombreData;
 
     
  // Relación uno a muchos con BloqueadoUsuario

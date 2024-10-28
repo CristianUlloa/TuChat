@@ -40,6 +40,6 @@ public class IntegranteGrupo implements Serializable {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "rol_id")
+    @JoinColumn(name = "rol_id", nullable = false)
     private EnumRolGrupo rol; // Este campo puede ser nulo, así que no es obligatorio
 }

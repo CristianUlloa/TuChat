@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnviarMensajeDTO {
+public class CrearCuentaDTO {
+	
+	private ActualizarPerfil perfil;
+	
+	private String correo;
 
-	private String texto;
-	
-	private EnviarArchivoDTO archivo;
-	
 }

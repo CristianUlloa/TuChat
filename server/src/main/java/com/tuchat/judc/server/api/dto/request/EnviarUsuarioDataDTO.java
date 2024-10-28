@@ -9,9 +9,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmarCorreoDTO {
+public class EnviarUsuarioDataDTO {
 	
-	private String correo;
-	private String codigo;
+	private String nombres;
+	
+	private String apellidos;
+	
+	private String nombreCompleto;
+	
+	private boolean usaNombreCompleto;
+
+	private String descripcion;
 
 }

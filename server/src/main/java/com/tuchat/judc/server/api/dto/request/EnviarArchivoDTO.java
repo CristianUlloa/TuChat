@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CrearGrupoDTO {
-
-	private String iconBase64;
-    private String iconExtension;
-
-    private String nombre;
-    private String descripcion;
-
+public class EnviarArchivoDTO {
+	private String extension;
+	private String dataBase64;
 }

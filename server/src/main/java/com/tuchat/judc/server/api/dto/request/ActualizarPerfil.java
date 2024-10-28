@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnviarMensajeDTO {
+public class ActualizarPerfil {
+	
+	private EnviarArchivoDTO icon;
 
-	private String texto;
-	
-	private EnviarArchivoDTO archivo;
-	
+	private EnviarUsuarioDataDTO data;
 }

@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnviarMensajeDTO {
+public class AuthPasswDTO {
 
-	private String texto;
-	
-	private EnviarArchivoDTO archivo;
-	
+	private String correo;
+	private String passw;
 }
