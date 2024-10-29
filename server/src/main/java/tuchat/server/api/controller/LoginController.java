@@ -43,10 +43,10 @@ public class LoginController {
 
 	@PostMapping("/codigo")
 	public ResponseEntity<?> loginWithCode(@RequestBody AuthCodigoDTO auth, HttpSession session) {
-		boolean isAuthenticated = true;
+		boolean isAuthenticated = true;//TODO
 		session.setAttribute(TuChat.USUARIO, usuarioRepository.findByCorreo(auth.getCorreo()));
 
-		
+		//TODO
 		//boolean isAuthenticated = loginService.login(auth, session);
 
 		if (isAuthenticated) {

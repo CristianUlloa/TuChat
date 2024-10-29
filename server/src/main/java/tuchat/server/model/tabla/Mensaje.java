@@ -31,7 +31,7 @@ public class Mensaje implements Serializable {
     @Column(name = "texto")
     private String texto;
 
-    @Column(name = "create_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_time", nullable = false,insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
 
     @ManyToOne

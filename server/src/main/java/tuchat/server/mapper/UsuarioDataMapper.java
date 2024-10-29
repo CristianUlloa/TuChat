@@ -2,7 +2,6 @@ package tuchat.server.mapper;
 
 import tuchat.server.api.dto.request.data.UsuarioDataDTO;
 import tuchat.server.api.dto.response.ObtenerInfoUsuarioDTO;
-import tuchat.server.api.dto.response.ObtenerLoginStatus;
 import tuchat.server.model.tabla.Usuario;
 import tuchat.server.model.tabla.UsuarioData;
 

@@ -31,14 +31,13 @@ public class MensajeController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<ObtenerMensajesPrivadoDTO> infoMensajePrivado(@RequestBody InfoMensajePrivadoDTO info, HttpSession session) {
+    public ResponseEntity<?> infoMensajePrivado(@RequestBody InfoMensajePrivadoDTO info, HttpSession session) {
         ObtenerMensajesPrivadoDTO obtenerMensajes = mensajeService.infoMensajePrivado(info, session);
         
         if (obtenerMensajes != null) {
             return ResponseEntity.ok(obtenerMensajes);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No encontrado");
         }
     }
 }
