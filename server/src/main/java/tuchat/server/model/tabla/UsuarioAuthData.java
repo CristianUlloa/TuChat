@@ -16,10 +16,10 @@ public class UsuarioAuthData {
     private Integer id;
 
     @Column(name = "usa_passw", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
-    private Boolean usaPassw;
+    private boolean usaPassw;
 
     @Column(name = "correo_confirmado", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
-    private Boolean correoConfirmado;
+    private boolean correoConfirmado;
 
     @Column(name = "update_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime updateTime;

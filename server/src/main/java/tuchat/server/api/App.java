@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "tuchat.server.repository")
-@EntityScan("tuchat.server.model")
+@EnableJpaRepositories()
+@EntityScan()
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
