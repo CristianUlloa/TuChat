@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpSession;
 import tuchat.server.api.dto.request.EnviarMensajePrivadoDTO;
@@ -38,6 +39,7 @@ public class MensajeService {
 	@Autowired
 	private EnumStatusMensajeRepository enumStatusMensajeRepository;
 
+	@Transactional
 	public boolean enviarMensajePrivado(EnviarMensajePrivadoDTO mensajePrivado, HttpSession session) {
 		if (logiadoService.noLogiado(session))
 			return false;
@@ -62,6 +64,7 @@ public class MensajeService {
 		return true;
 	}
 
+	@Transactional
 	public ObtenerMensajesPrivadoDTO infoMensajePrivado(InfoMensajePrivadoDTO info, HttpSession session) {
 		if (logiadoService.noLogiado(session))
 			return null;

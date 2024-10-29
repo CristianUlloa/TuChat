@@ -19,4 +19,14 @@ public interface MensajeRepository extends JpaRepository<Mensaje, Integer> {
 	List<Mensaje> findMensajesEntreUsuariosSinGrupo(@Param("usuario1Id") Integer usuario1Id,
 			@Param("usuario2Id") Integer usuario2Id);
 
+	// En el repositorio MensajeRepository
+
+	@Query("SELECT DISTINCT u.correo " +
+	       "FROM Mensaje m " +
+	       "JOIN m.usuarioEmisor u " +
+	       "JOIN MensajeData md ON md.mensaje = m " +
+	       "WHERE (u.id = :userId AND md.usuarioReceptor.id != :userId) " +
+	       "OR (md.usuarioReceptor.id = :userId AND u.id != :userId)")
+	List<String> findContactEmailsByUserId(@Param("userId") Integer userId);
+
 }

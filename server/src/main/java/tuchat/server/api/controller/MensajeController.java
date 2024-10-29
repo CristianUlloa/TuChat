@@ -13,6 +13,7 @@ import tuchat.server.api.service.MensajeService;
 
 @RestController
 @RequestMapping("/mensaje")
+@CrossOrigin(origins = "*") // Permitir todos los orígenes
 public class MensajeController {
 
     @Autowired

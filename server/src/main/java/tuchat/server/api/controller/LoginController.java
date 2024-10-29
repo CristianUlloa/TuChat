@@ -3,6 +3,7 @@ package tuchat.server.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import tuchat.server.repository.tabla.UsuarioRepository;
 
 @RestController
 @RequestMapping("/login")
+@CrossOrigin(origins = "*") // Permitir todos los orígenes
 public class LoginController {
 
 	@Autowired
