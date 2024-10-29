@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
-import tuchat.server.api.TuChat;
 import tuchat.server.api.dto.request.AuthCodigoDTO;
 import tuchat.server.api.dto.request.AuthPasswDTO;
 import tuchat.server.api.dto.request.CrearCuentaDTO;
@@ -28,14 +27,19 @@ public class LoginService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+
 	@Autowired
 	private RegistroInicioSesionRepository registroInicioSesionRepository;
+
 	@Autowired
 	private CodigoRepository codigoRepository;
-	
+
 	@Autowired
 	private UsuarioAuthRepository usuarioAuthRepository;
-	
+
+	@Autowired
+	private LogiadoService logiadoService;
+
 	public boolean login(AuthPasswDTO auth, HttpSession session) {
 		Usuario usuario = usuarioRepository.findByCorreo(auth.getCorreo());
 
@@ -69,9 +73,9 @@ public class LoginService {
 		}
 		// Llama a _login con los parámetros adicionales
 		_login(usuario, session, auth.getCodigo(), usuario.getAuth().getCurrentCodigo());
-		
+
 		usuario.getAuth().setCorreoConfirmado(true);
-		
+
 		usuarioAuthRepository.saveAndFlush(usuario.getAuth());
 		return true;
 	}
@@ -98,18 +102,17 @@ public class LoginService {
 
 	private void _login(Usuario usuario, HttpSession session, String valor, Object auth) {
 		// Establece la sesión del usuario
-		session.setAttribute(TuChat.USUARIO, usuario);
+		logiadoService.setUsuario(usuario, session);
 
 		// Registra el intento exitoso
 		registroInicioSession(usuario, valor, true, auth);
-		
-		if(auth instanceof Codigo)
-		{
-			Codigo cod = (Codigo)auth;
-			
+
+		if (auth instanceof Codigo) {
+			Codigo cod = (Codigo) auth;
+
 			cod.setUsado(true);
 			cod.setComprobado(true);
-			
+
 			codigoRepository.saveAndFlush(cod);
 		}
 	}
@@ -120,7 +123,6 @@ public class LoginService {
 
 	public boolean crearCuenta(CrearCuentaDTO nuevaCuenta, HttpSession session) {
 		Usuario usuario = UsuarioMapper.crear(nuevaCuenta);
-		
 
 		pedirNuevoCodigo(usuario);
 
@@ -138,13 +140,12 @@ public class LoginService {
 
 		Codigo codigo = usuario.getAuth().getCurrentCodigo();
 		codigo = codigoRepository.saveAndFlush(codigo);
-		
-		if(lastCodigo != null)
-		{
+
+		if (lastCodigo != null) {
 			lastCodigo.setUsado(true);
 			codigoRepository.saveAndFlush(lastCodigo);
 		}
-		
+
 		usuarioAuthRepository.saveAndFlush(usuario.getAuth());
 
 		return codigo != null;
@@ -152,9 +153,9 @@ public class LoginService {
 
 	private void pedirNuevoCodigo(Usuario usuario) {
 		Codigo codigo = generarCodigo();
-		
+
 		codigo.setUsuario(usuario);
-				
+
 		usuario.getAuth().setCurrentCodigo(codigo);
 
 	}
@@ -200,11 +201,10 @@ public class LoginService {
 	}
 
 	public ObtenerLoginStatus status(HttpSession session) {
-		Usuario usuario = (Usuario) session.getAttribute(TuChat.USUARIO);
-		if (usuario == null)
+		if (logiadoService.noLogiado(session))
 			return null;
 
-		return UsuarioDataMapper.toInfoDTO(usuario);
+		return new ObtenerLoginStatus(UsuarioDataMapper.toInfoDTO(logiadoService.getUsuario(session)));
 	}
 
 	@Override

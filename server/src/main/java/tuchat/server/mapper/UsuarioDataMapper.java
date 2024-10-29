@@ -24,7 +24,7 @@ public class UsuarioDataMapper {
 		return data;
 	}
 
-	public static ObtenerLoginStatus toInfoDTO(Usuario usuario) {
+	public static ObtenerInfoUsuarioDTO toInfoDTO(Usuario usuario) {
 	    var data = usuario.getData(); 
 
 	    ObtenerInfoUsuarioDTO infoUsuario = ObtenerInfoUsuarioDTO.builder()
@@ -39,7 +39,7 @@ public class UsuarioDataMapper {
 	        infoUsuario.setNombre(data.getNombres() + " " + data.getApellidos());
 	    }
 
-	    return new ObtenerLoginStatus(infoUsuario);
+	    return infoUsuario;
 	}
 
 
