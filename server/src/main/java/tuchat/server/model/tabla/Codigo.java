@@ -25,7 +25,7 @@ public class Codigo implements Serializable {
     @Column(name = "codigo", length = 20, nullable = false)
     private String codigo;
 
-    @Column(name = "create_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_time", nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
 
     @Column(name = "usado", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")

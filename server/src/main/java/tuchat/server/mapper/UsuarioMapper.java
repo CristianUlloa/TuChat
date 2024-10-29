@@ -28,6 +28,9 @@ public class UsuarioMapper {
 		
 		usuario.setAuth(auth);
 						
+		usuario.getAuth().setUsuario(usuario);
+		usuario.getData().setUsuario(usuario);
+
 		return usuario;
 	}
 

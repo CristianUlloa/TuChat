@@ -40,7 +40,7 @@ public class Usuario implements Serializable {
     @Column(name = "correo", length = 50, nullable = false, unique = true)
     private String correo;
 
-    @Column(name = "create_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_time", nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
 
     @ManyToOne
@@ -76,10 +76,10 @@ public class Usuario implements Serializable {
     private List<RegistroInicioSesion> registrosInicioSesion;
 
     // Relación uno a uno con UsuarioAuth
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.PERSIST)
     private UsuarioAuth auth;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.PERSIST)
     private UsuarioData data;
 
     
@@ -91,4 +91,8 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario")
     private List<ContactoUsuario> contactos;
 
+    @Override
+	public String toString() {
+		return "xd" + getClass().getSimpleName();
+	}
 }

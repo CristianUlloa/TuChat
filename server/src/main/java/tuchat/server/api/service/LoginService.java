@@ -17,7 +17,9 @@ import tuchat.server.model.tabla.Codigo;
 import tuchat.server.model.tabla.RegistroInicioSesion;
 import tuchat.server.model.tabla.Usuario;
 import tuchat.server.model.tabla.UsuarioAuth;
+import tuchat.server.repository.tabla.CodigoRepository;
 import tuchat.server.repository.tabla.RegistroInicioSesionRepository;
+import tuchat.server.repository.tabla.UsuarioAuthRepository;
 import tuchat.server.repository.tabla.UsuarioRepository;
 import tuchat.server.util.AutenticacionUtil;
 
@@ -28,7 +30,12 @@ public class LoginService {
 	private UsuarioRepository usuarioRepository;
 	@Autowired
 	private RegistroInicioSesionRepository registroInicioSesionRepository;
-
+	@Autowired
+	private CodigoRepository codigoRepository;
+	
+	@Autowired
+	private UsuarioAuthRepository usuarioAuthRepository;
+	
 	public boolean login(AuthPasswDTO auth, HttpSession session) {
 		Usuario usuario = usuarioRepository.findByCorreo(auth.getCorreo());
 
@@ -62,6 +69,10 @@ public class LoginService {
 		}
 		// Llama a _login con los parámetros adicionales
 		_login(usuario, session, auth.getCodigo(), usuario.getAuth().getCurrentCodigo());
+		
+		usuario.getAuth().setCorreoConfirmado(true);
+		
+		usuarioAuthRepository.saveAndFlush(usuario.getAuth());
 		return true;
 	}
 
@@ -91,6 +102,16 @@ public class LoginService {
 
 		// Registra el intento exitoso
 		registroInicioSession(usuario, valor, true, auth);
+		
+		if(auth instanceof Codigo)
+		{
+			Codigo cod = (Codigo)auth;
+			
+			cod.setUsado(true);
+			cod.setComprobado(true);
+			
+			codigoRepository.saveAndFlush(cod);
+		}
 	}
 
 	public void logout(HttpSession session) {
@@ -99,6 +120,7 @@ public class LoginService {
 
 	public boolean crearCuenta(CrearCuentaDTO nuevaCuenta, HttpSession session) {
 		Usuario usuario = UsuarioMapper.crear(nuevaCuenta);
+		
 
 		pedirNuevoCodigo(usuario);
 
@@ -111,15 +133,30 @@ public class LoginService {
 
 	public boolean pedirNuevoCodigo(PedirNuevoCodigoDTO nuevoCodigo) {
 		Usuario usuario = usuarioRepository.findByCorreo(nuevoCodigo.getCorreo());
+		Codigo lastCodigo = usuario.getAuth().getCurrentCodigo();
 		pedirNuevoCodigo(usuario);
 
-		return true;
+		Codigo codigo = usuario.getAuth().getCurrentCodigo();
+		codigo = codigoRepository.saveAndFlush(codigo);
+		
+		if(lastCodigo != null)
+		{
+			lastCodigo.setUsado(true);
+			codigoRepository.saveAndFlush(lastCodigo);
+		}
+		
+		usuarioAuthRepository.saveAndFlush(usuario.getAuth());
+
+		return codigo != null;
 	}
 
 	private void pedirNuevoCodigo(Usuario usuario) {
 		Codigo codigo = generarCodigo();
-
+		
+		codigo.setUsuario(usuario);
+				
 		usuario.getAuth().setCurrentCodigo(codigo);
+
 	}
 
 	private Codigo generarCodigo() {
@@ -170,4 +207,8 @@ public class LoginService {
 		return UsuarioDataMapper.toInfoDTO(usuario);
 	}
 
+	@Override
+	public String toString() {
+		return "xd" + getClass().getSimpleName();
+	}
 }

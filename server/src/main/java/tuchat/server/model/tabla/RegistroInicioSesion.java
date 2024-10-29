@@ -41,6 +41,6 @@ public class RegistroInicioSesion implements Serializable {
     @Column(name = "exitoso", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
     private Boolean exitoso;
 
-    @Column(name = "create_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_time", nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
 }

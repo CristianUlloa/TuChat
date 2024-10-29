@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import tuchat.server.model.tabla.UsuarioAuth;
 
 @Repository
-public interface UsuarioAuthDataRepository extends JpaRepository<UsuarioAuth, Integer> {
+public interface UsuarioAuthRepository extends JpaRepository<UsuarioAuth, Integer> {
     // Aquí puedes agregar métodos personalizados si es necesario
 }

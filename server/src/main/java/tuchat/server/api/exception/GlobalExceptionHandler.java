@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // O el status que prefieras
     public ResponseEntity<String> manejarRuntimeException(RuntimeException ex) {
+    	ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + ex.getMessage());
     }
 }
