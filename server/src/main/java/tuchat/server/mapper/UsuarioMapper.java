@@ -3,6 +3,7 @@ package tuchat.server.mapper;
 import tuchat.server.api.dto.request.CrearCuentaDTO;
 import tuchat.server.model.tabla.Archivo;
 import tuchat.server.model.tabla.Usuario;
+import tuchat.server.model.tabla.UsuarioAuth;
 import tuchat.server.model.tabla.UsuarioData;
 
 public class UsuarioMapper {
@@ -21,7 +22,12 @@ public class UsuarioMapper {
 			
 			usuario.setIcon(archivo);
 		}
-				
+		
+		UsuarioAuth auth = UsuarioAuth.builder()
+				.build();
+		
+		usuario.setAuth(auth);
+						
 		return usuario;
 	}
 

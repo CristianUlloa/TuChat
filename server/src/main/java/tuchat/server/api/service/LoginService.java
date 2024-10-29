@@ -8,47 +8,70 @@ import tuchat.server.api.TuChat;
 import tuchat.server.api.dto.request.AuthCodigoDTO;
 import tuchat.server.api.dto.request.AuthPasswDTO;
 import tuchat.server.api.dto.request.CrearCuentaDTO;
+import tuchat.server.api.dto.request.PedirNuevoCodigoDTO;
+import tuchat.server.api.dto.response.ObtenerLoginStatus;
+import tuchat.server.mapper.UsuarioDataMapper;
+import tuchat.server.mapper.UsuarioMapper;
 import tuchat.server.model.tabla.AuthPassw;
 import tuchat.server.model.tabla.Codigo;
+import tuchat.server.model.tabla.RegistroInicioSesion;
 import tuchat.server.model.tabla.Usuario;
-import tuchat.server.model.tabla.UsuarioAuthData;
+import tuchat.server.model.tabla.UsuarioAuth;
+import tuchat.server.repository.tabla.RegistroInicioSesionRepository;
 import tuchat.server.repository.tabla.UsuarioRepository;
+import tuchat.server.util.AutenticacionUtil;
 
 @Service
 public class LoginService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	@Autowired
+	private RegistroInicioSesionRepository registroInicioSesionRepository;
 
 	public boolean login(AuthPasswDTO auth, HttpSession session) {
-
 		Usuario usuario = usuarioRepository.findByCorreo(auth.getCorreo());
 
-		if (!_validarLogin(usuario, true, auth.getPassw()))
+		if (!_validarLogin(usuario, true, auth.getPassw())) {
+			registroInicioSession(usuario, auth.getPassw(), false, usuario.getAuth().getCurrentPassw());
 			return false;
-		_login(usuario, session);
-
+		}
+		// Llama a _login con los parámetros adicionales
+		_login(usuario, session, auth.getPassw(), usuario.getAuth().getCurrentPassw());
 		return true;
 	}
 
 	public boolean login(AuthCodigoDTO auth, HttpSession session) {
-
 		Usuario usuario = usuarioRepository.findByCorreo(auth.getCorreo());
 
-		if (!_validarLogin(usuario, false, auth.getCodigo()))
+		if (!_validarLogin(usuario, false, auth.getCodigo())) {
+			registroInicioSession(usuario, auth.getCodigo(), false, usuario.getAuth().getCurrentCodigo());
 			return false;
-		_login(usuario, session);
+		}
+		// Llama a _login con los parámetros adicionales
+		_login(usuario, session, auth.getCodigo(), usuario.getAuth().getCurrentCodigo());
+		return true;
+	}
 
+	public boolean confirmarCorreo(AuthCodigoDTO auth, HttpSession session) {
+		Usuario usuario = usuarioRepository.findByCorreo(auth.getCorreo());
+
+		if (!_validarConfirmarCorreo(usuario, auth)) {
+			registroInicioSession(usuario, auth.getCodigo(), false, usuario.getAuth().getCurrentCodigo());
+			return false;
+		}
+		// Llama a _login con los parámetros adicionales
+		_login(usuario, session, auth.getCodigo(), usuario.getAuth().getCurrentCodigo());
 		return true;
 	}
 
 	private boolean _validarLogin(Usuario usuario, boolean passw, String val) {
-		UsuarioAuthData authData = usuario.getAuthData();
+		UsuarioAuth authData = usuario.getAuth();
 
 		if (!authData.isCorreoConfirmado())
 			return false;
 
-		if (!(passw == authData.isUsaPassw()))
+		if (passw && !authData.isUsaPassw())
 			return false;
 
 		if (passw) {
@@ -56,14 +79,18 @@ public class LoginService {
 
 			return currentAuth.getPassw().equals(val);
 		} else {
-			 Codigo currentAuth = authData.getCurrentCodigo();
+			Codigo currentAuth = authData.getCurrentCodigo();
 
 			return currentAuth.getCodigo().equals(val);
 		}
 	}
 
-	private void _login(Usuario u, HttpSession ss) {
-		ss.setAttribute(TuChat.USUARIO, u);
+	private void _login(Usuario usuario, HttpSession session, String valor, Object auth) {
+		// Establece la sesión del usuario
+		session.setAttribute(TuChat.USUARIO, usuario);
+
+		// Registra el intento exitoso
+		registroInicioSession(usuario, valor, true, auth);
 	}
 
 	public void logout(HttpSession session) {
@@ -71,7 +98,76 @@ public class LoginService {
 	}
 
 	public boolean crearCuenta(CrearCuentaDTO nuevaCuenta, HttpSession session) {
-		// TODO Auto-generated method stub
-		return false;
+		Usuario usuario = UsuarioMapper.crear(nuevaCuenta);
+
+		pedirNuevoCodigo(usuario);
+
+		usuario = usuarioRepository.saveAndFlush(usuario);
+
+		// no se agrega el usuario a la session
+		// aun falta confirmar el correo
+		return usuario != null;
 	}
+
+	public boolean pedirNuevoCodigo(PedirNuevoCodigoDTO nuevoCodigo) {
+		Usuario usuario = usuarioRepository.findByCorreo(nuevoCodigo.getCorreo());
+		pedirNuevoCodigo(usuario);
+
+		return true;
+	}
+
+	private void pedirNuevoCodigo(Usuario usuario) {
+		Codigo codigo = generarCodigo();
+
+		usuario.getAuth().setCurrentCodigo(codigo);
+	}
+
+	private Codigo generarCodigo() {
+		return Codigo.builder().codigo(AutenticacionUtil.generarCodigoValidacion(20)).build();
+	}
+
+	private boolean _validarConfirmarCorreo(Usuario usuario, AuthCodigoDTO auth) {
+		UsuarioAuth authData = usuario.getAuth();
+
+		if (authData.isCorreoConfirmado())
+			return false;
+
+		Codigo currentAuth = authData.getCurrentCodigo();
+
+		if (currentAuth.isUsado())
+			return false;
+
+		return currentAuth.getCodigo().equals(auth.getCodigo());
+	}
+
+	private void registroInicioSession(Usuario usuario, String valor, Boolean exitoso, Object auth) {
+		RegistroInicioSesion registroInicioSesion = RegistroInicioSesion.builder().usuario(usuario).valor(valor)
+				.exitoso(exitoso).build();
+
+		if (auth != null) {
+			if (auth instanceof AuthPassw) {
+
+				AuthPassw authP = (AuthPassw) auth;
+
+				registroInicioSesion.setAuthPassw(authP);
+
+			} else if (auth instanceof Codigo) {
+				Codigo cod = (Codigo) auth;
+
+				registroInicioSesion.setCodigo(cod);
+			}
+
+		}
+
+		registroInicioSesionRepository.saveAndFlush(registroInicioSesion);
+	}
+
+	public ObtenerLoginStatus status(HttpSession session) {
+		Usuario usuario = (Usuario) session.getAttribute(TuChat.USUARIO);
+		if (usuario == null)
+			return null;
+
+		return UsuarioDataMapper.toInfoDTO(usuario);
+	}
+
 }

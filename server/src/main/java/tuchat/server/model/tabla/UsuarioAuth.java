@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "UsuarioAuthData")
-public class UsuarioAuthData {
+@Table(name = "UsuarioAuth")
+public class UsuarioAuth {
 
     @Id
     private Integer id;
@@ -33,6 +33,8 @@ public class UsuarioAuthData {
     private Codigo currentCodigo; // Asegúrate de que la clase Codigo esté definida
 
     @OneToOne
+    @MapsId // Esto indica que la clave primaria de UsuarioData es la misma que la de Usuario.
     @JoinColumn(name = "id")
-    private Usuario usuario; // Asegúrate de que la clase Usuario esté definida
+    private Usuario usuario;
+    
 }

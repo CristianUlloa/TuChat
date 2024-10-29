@@ -1,4 +1,4 @@
-package tuchat.server.api.dto.response;
+package tuchat.server.api.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ObtenerLoginStatus {
-	
-	private ObtenerInfoUsuarioDTO info;
-	
+public class PedirNuevoCodigoDTO {
+
+	private String correo;
 }

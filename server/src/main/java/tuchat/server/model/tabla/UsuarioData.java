@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,12 +33,13 @@ public class UsuarioData {
     private String nombreCompleto;
 
     @Column(name = "usa_nombre_completo", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
-    private Boolean usaNombreCompleto;
+    private boolean usaNombreCompleto;
 
     @Column(name = "descripcion", length = 300)
     private String descripcion;
 
     @OneToOne
+    @MapsId // Esto indica que la clave primaria de UsuarioData es la misma que la de Usuario.
     @JoinColumn(name = "id")
-    private Usuario usuario; // Asegúrate de que la clase Usuario esté definida
+    private Usuario usuario;
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -74,15 +75,12 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario")
     private List<RegistroInicioSesion> registrosInicioSesion;
 
-    // Relación uno a uno con UsuarioAuthData
-    @OneToOne(mappedBy = "usuario")
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private UsuarioAuthData authData;
+    // Relación uno a uno con UsuarioAuth
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private UsuarioAuth auth;
 
-    // Relación uno a uno con UsuarioNombreData
-    @OneToOne(mappedBy = "usuario")
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private UsuarioData nombreData;
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private UsuarioData data;
 
     
  // Relación uno a muchos con BloqueadoUsuario

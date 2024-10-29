@@ -1,6 +1,9 @@
 package tuchat.server.mapper;
 
 import tuchat.server.api.dto.request.data.UsuarioDataDTO;
+import tuchat.server.api.dto.response.ObtenerInfoUsuarioDTO;
+import tuchat.server.api.dto.response.ObtenerLoginStatus;
+import tuchat.server.model.tabla.Usuario;
 import tuchat.server.model.tabla.UsuarioData;
 
 public class UsuarioDataMapper {
@@ -20,5 +23,24 @@ public class UsuarioDataMapper {
 
 		return data;
 	}
+
+	public static ObtenerLoginStatus toInfoDTO(Usuario usuario) {
+	    var data = usuario.getData(); 
+
+	    ObtenerInfoUsuarioDTO infoUsuario = ObtenerInfoUsuarioDTO.builder()
+	            .correo(usuario.getCorreo())
+	            .descripcion(data.getDescripcion())
+	            .iconData(ArchivoMapper.toDTO(usuario.getIcon()))
+	            .build();
+
+	    if (data.isUsaNombreCompleto()) {
+	        infoUsuario.setNombre(data.getNombreCompleto());
+	    } else {
+	        infoUsuario.setNombre(data.getNombres() + " " + data.getApellidos());
+	    }
+
+	    return new ObtenerLoginStatus(infoUsuario);
+	}
+
 
 }
