@@ -1,10 +1,23 @@
 package tuchat.server.model.tabla;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -33,6 +46,9 @@ public class Mensaje implements Serializable {
 
     @Column(name = "create_time", nullable = false,insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
+
+    @OneToMany(mappedBy = "mensaje")
+    private List<MensajeData> mensajeData;
 
     @ManyToOne
     @JoinColumn(name = "archivo_id")

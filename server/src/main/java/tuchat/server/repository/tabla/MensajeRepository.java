@@ -21,12 +21,21 @@ public interface MensajeRepository extends JpaRepository<Mensaje, Integer> {
 
 	// En el repositorio MensajeRepository
 
-	@Query("SELECT DISTINCT u.correo " +
-	       "FROM Mensaje m " +
-	       "JOIN m.usuarioEmisor u " +
-	       "JOIN MensajeData md ON md.mensaje = m " +
-	       "WHERE (u.id = :userId AND md.usuarioReceptor.id != :userId) " +
-	       "OR (md.usuarioReceptor.id = :userId AND u.id != :userId)")
-	List<String> findContactEmailsByUserId(@Param("userId") Integer userId);
+	
+	@Query("SELECT u.correo " +
+		       "FROM Mensaje m " +
+		       "JOIN m.mensajeData md " +  // Utiliza la relación mapeada en Mensaje
+		       "JOIN md.usuarioReceptor u " +  // Usa la relación en MensajeData
+		       "WHERE md.usuarioReceptor.id = :userId")
+		List<String> findContactEmailsFromReceiver(@Param("userId") Integer userId);
+
+	@Query("SELECT u.correo " +
+		       "FROM Mensaje m " +
+		       "JOIN m.mensajeData md " +  // Utiliza la relación mapeada en Mensaje
+		       "JOIN md.usuarioReceptor u " +  // Usa la relación en MensajeData
+		       "WHERE m.usuarioEmisor.id = :userId")
+		List<String> findContactEmailsFromSender(@Param("userId") Integer userId);
+
+
 
 }

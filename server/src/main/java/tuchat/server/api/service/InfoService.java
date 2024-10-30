@@ -1,6 +1,9 @@
 package tuchat.server.api.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,32 +46,31 @@ public class InfoService {
 		return new ObtenerContactosDTO(correos);
 	}
 
-	@Transactional
-	public ObtenerContactosDTO infoNoContactos(HttpSession session) {
-	    if (logiadoService.noLogiado(session))
-	        return null;
+	 @Transactional
+	    public ObtenerContactosDTO infoNoContactos(HttpSession session) {
+	        if (logiadoService.noLogiado(session))
+	            return null;
 
-	    Usuario usuario = logiadoService.getUsuario(session);
-	    usuario = usuarioRepository.findById(logiadoService.getUsuario(session).getId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-	    
-	    
-	    List<String> exclude = infoContactos(session).getCorreos();
-	    String excludeMiCorreo = usuario.getCorreo();
+	        Usuario usuario = logiadoService.getUsuario(session);
+	        usuario = usuarioRepository.findById(usuario.getId())
+	                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-	    // Obtener los correos de los usuarios con los que ha chateado
-	    List<String> contactosChat = mensajeRepository.findContactEmailsByUserId(usuario.getId());
+	        List<String> exclude = infoContactos(session).getCorreos();
+	        String excludeMiCorreo = usuario.getCorreo();
 
-	    for(String str: contactosChat)
-	    {
-	    	System.out.println(str);
+	        // Obtener los correos de los usuarios con los que ha chateado
+	        List<String> correosDesdeEmisor = mensajeRepository.findContactEmailsFromSender(usuario.getId());
+	        List<String> correosDesdeReceptor = mensajeRepository.findContactEmailsFromReceiver(usuario.getId());
+
+	        // Usar un Set para evitar duplicados
+	        Set<String> contactosChat = new HashSet<>(correosDesdeEmisor);
+	        contactosChat.addAll(correosDesdeReceptor);
+
+	        // Excluir los correos que están en la lista "exclude" y el correo del usuario actual
+	        contactosChat.removeAll(exclude);
+	        contactosChat.remove(excludeMiCorreo);
+
+	        return new ObtenerContactosDTO(new ArrayList<>(contactosChat));
 	    }
-	    
-	    // Excluir los correos que están en la lista "exclude"
-	    contactosChat.removeAll(exclude);
-	    contactosChat.remove(excludeMiCorreo);
-
-	    return new ObtenerContactosDTO(contactosChat);
-	}
 
 }
